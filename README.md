@@ -16,7 +16,7 @@ Requirements
 * PHP 5
 * PHP Extensions: simplexml (default), PDO (default), PDO SQLite driver* (default), and OAuth (in PECL, not standard)
 * Optionally edit to use a non-sqlite driver, as any PDO friendly DB should work (all queries are simple)
-* Yahoo API Key: https://developer.apps.yahoo.com/dashboard/createKey.html
+* Yahoo API Key: <https://developer.apps.yahoo.com/dashboard/createKey.html>
 * setup.php checks for all of these requirements, so it'll yell at you if not ready
 * Note: It's rare for a host to have or enable the OAuth extension.
 
@@ -44,7 +44,7 @@ Notes
 * This is not well tested and does contain bugs
 * Please find and fix bugs, and cleanup code
 * The functionality is simple, and not pretty (e.g., ugly HTML) but it works
-* Revoking OAuth tokens for Yahoo applications can be done here: https://api.login.yahoo.com/WSLogin/V1/unlink
+* Revoking OAuth tokens for Yahoo applications can be done here: <https://api.login.yahoo.com/WSLogin/V1/unlink>
 
 TODO
 ------------
@@ -65,5 +65,5 @@ TODO
 License
 ------------
 
-* All files here use the Apache 2.0 license: http://www.apache.org/licenses/LICENSE-2.0.html
+* All files here use the Apache 2.0 license: <http://www.apache.org/licenses/LICENSE-2.0.html>
 * Author: Philip Olson <philip@roshambo.org>
