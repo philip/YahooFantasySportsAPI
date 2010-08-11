@@ -370,10 +370,7 @@ class YahooMessageArchiver extends db {
 		}
 		foreach ( $data->users->user->games->game as $game ) {
 			foreach ( $game->leagues->league as $league ) {
-				$info[] = array(
-					'league_key' => (string) $league->league_key,
-					'league_id'  => (string) $league->league_id,
-				);
+				$info[] = (array) $league;
 			}
 		}
 		return $info;
@@ -400,6 +397,7 @@ class YahooMessageArchiver extends db {
 		}
 	}
 
+	// @todo add all information, like url, name, etc. as per getLeagueIds().
 	public function storeLeagueIds( $xoauth_yahoo_guid ) {
 		$ids = $this->getLeagueIds( TRUE );
 		if ( empty( $xoauth_yahoo_guid ) || empty( $ids ) ) {
