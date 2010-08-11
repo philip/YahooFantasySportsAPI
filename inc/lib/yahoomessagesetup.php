@@ -55,7 +55,9 @@ class YahooMessageSetup extends db {
 			mid TEXT PRIMARY KEY,
 			message_id INTEGER,
 			subject TEXT,
-			yahoo_id TEXT,
+			team_key TEXT,
+			display_name TEXT,
+			guid TEXT,
 			team_name TEXT,
 			timestamp INTEGER,
 			text TEXT,
@@ -77,7 +79,7 @@ class YahooMessageSetup extends db {
 			$this->connect();
 		}
 		$sql = "CREATE TABLE transactions (
-			transaction_key PRIMARY KEY TEXT,
+			transaction_key TEXT PRIMARY KEY,
 			transaction_id INTEGER,
 			type_generic TEXT,
 			timestamp INTEGER,

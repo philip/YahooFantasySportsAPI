@@ -299,8 +299,8 @@ class YahooMessageArchiver extends db {
 		// Consider not using "replace into"
 		// @todo allow inserting only "new" messages
 		$sql = "REPLACE INTO messages 
-				(mid, message_id, subject, yahoo_id, team_name, timestamp, text, league_key, league_id)
-				VALUES (:mid, :message_id, :subject, :yahoo_id, :team_name, :timestamp, :text, :league_key, :league_id)
+				(mid, message_id, subject, team_key, display_name, guid, team_name, timestamp, text, league_key, league_id)
+				VALUES (:mid, :message_id, :subject, :team_key, :display_name, :guid, :team_name, :timestamp, :text, :league_key, :league_id)
 		";
 		try {
 			$stmt = self::$dbh->prepare( $sql );
@@ -309,7 +309,9 @@ class YahooMessageArchiver extends db {
 				':mid'			=> (string) $data->message_id . '_' . (int) $league_id, // wanted something unique
 				':message_id'	=> (string) $data->message_id,
 				':subject'		=> (string) $data->subject,
-				':yahoo_id'		=> (string) $data->yahoo_id,
+				':team_key'		=> (string) $data->team_key,
+				':display_name'	=> (string) $data->display_name,
+				':guid'			=> (string) $data->guid,
 				':team_name'	=> (string) $data->team_name,
 				':timestamp'	=> (int)    $data->timestamp,
 				':text'			=> (string) $data->text,
