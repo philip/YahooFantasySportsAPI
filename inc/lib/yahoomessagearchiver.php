@@ -338,7 +338,7 @@ class YahooMessageArchiver extends db {
 			$this->connect();
 		}
 		
-		$sql = "SELECT * FROM messages WHERE league_key = '$league_key'";
+		$sql = "SELECT * FROM messages WHERE league_key = '$league_key' ORDER BY message_id";
 		try {
 			$res  = self::$dbh->query( $sql );
 			$rows = $res->fetchAll( PDO::FETCH_ASSOC );
