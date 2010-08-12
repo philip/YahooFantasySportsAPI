@@ -11,39 +11,42 @@ try {
 
 // @todo make output prettier instead of print_r() everywhere
 try {
-	print "<pre>";
-
-	// Stored info
-	echo "Stored info\n";
+	
 	$info = $m->getStoredInfo();
-	print_r($info);
-
-	// League Ids
-	echo "League Ids from site\n";
-	$ids = $m->getLeagueIds(TRUE);
-	print_r($ids);
+	echo '<h3>Stored authentication information</h3>', PHP_EOL;
+	echo '<p>GUID of user: ', $info['xoauth_yahoo_guid'], '</p>', PHP_EOL;
+	echo '<p>Additional information is saved.</p>';
 	
-	echo "League Ids stored locally\n";
-	$ids = $m->getLocalLeagueIds($m->xoauth_yahoo_guid);
-	print_r($ids);
-	
-	echo "</pre>";
+	echo '<h3>All leagues you have played in</h3>', PHP_EOL;
+	$ids = $m->getLeagueIds(FALSE);
 
-	// Past Games
-	echo "Games you play in.\n";
-	$data = $m->retrieve("users;use_login=1/games");
-	$i = 1;
-	echo "<table>";
-	foreach ($data->users->user->games->game as $game) {
-		$bgcolor = ($i & 1) ? '#ffffff' : '#eeeeee';
-		$game = (array) $game;
-		echo "<tr bgcolor='$bgcolor'>";
-		echo "<td>", $game['season'], '</td>';
-		echo "<td>", $game['code'], '</td>';
-		echo '</tr>';
+	echo '<dl>';
+	foreach ($ids as $id) {
+		// @todo A few are missing this, research this
+		if (false === strpos($id['url'], 'http://')) {
+			$id['url'] = 'http://football.fantasysports.yahoo.com' . $id['url'];
+		}
+		echo '<dt><a href="', $id['url'], '">', $id['name'], '</a></dt>', PHP_EOL;
+		echo '<dd>League Key: ', $id['league_key'], ' with ', $id['num_teams'], ' teams</dd>', PHP_EOL;
+		
+		// @todo Somtimes an empty object, research this, because league has not started? What does 'update' mean?
+		$time = $id['league_update_timestamp'];
+		if (is_object($time)) {
+			$time = 'unknown';
+		} else {
+			$time = date('F d, Y', $id['league_update_timestamp']);
+		}
+		echo '<dd>Date of last update: ', $time, '</dd>', PHP_EOL;
 	}
-	echo "</table>";
 	
+	// @todo not yet implemented, really
+	$ids = $m->getLocalLeagueIds($m->xoauth_yahoo_guid);
+	if ($ids) {
+		echo '<h3>League Ids stored locally</h3>', PHP_EOL;
+		echo '<pre>';
+		print_r($ids);
+		echo '</pre>';
+	}
 
 } catch(OAuthException $e) {
 
