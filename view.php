@@ -17,20 +17,25 @@ try {
 // @todo Make output prettier and not print_r() everywhere
 try {
 	echo '<h3>Local Messages</h3>';
-	echo '<pre>';
 	$rows = $m->getLocalMessages( $_GET['lk'] );
-	print_r( $rows );
-	echo '</pre>';
+
+		foreach ($rows as $row) {
+			echo '<p>Subject: ', $row['subject'], '</p>';
+			echo '<p>', $row['text'], '</p>';
+			echo '<p>By: ', $row['display_name'], ' (', $row['team_name'], ') on ', date('F d, Y', $row['timestamp']);
+			echo '<hr />';
+		}
 
 	// @todo test this, make it possible to export
-    //exportToCsv( (array) $rows, '/tmp/tmp.csv');
-	
+	//exportToCsv( (array) $rows, '/tmp/tmp.csv');
 	echo '<h3>Remote Messages</h3>';
+	echo '<p>Disabled, See code.</p>';
+	/*
 	echo '<pre>';
 	$rows = $m->getMessages( 0, 100, $_GET['lk'] );
 	print_r( $rows );
 	echo '</pre>';
-
+	*/
 	
 } catch( OAuthException $e ) {
 
@@ -41,3 +46,4 @@ try {
 }
 
 require './inc/footer.php';
+
