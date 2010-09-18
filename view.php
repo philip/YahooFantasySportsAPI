@@ -21,7 +21,7 @@ try {
 
 		foreach ($rows as $row) {
 			echo '<p>Subject: ', $row['subject'], '</p>';
-			echo '<p>', $row['text'], '</p>';
+			echo '<p>', nl2br(makeClickableLinks($row['text'])), '</p>';
 			echo '<p>By: ', $row['display_name'], ' (', $row['team_name'], ') on ', date('F d, Y', $row['timestamp']);
 			echo '<hr />';
 		}
