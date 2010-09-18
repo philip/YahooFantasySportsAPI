@@ -79,3 +79,11 @@ function exportToCsv( $data, $filename = 'tmp.csv' ) {
 	}
 	return $count;
 }
+
+// Taken from: http://stackoverflow.com/questions/1960461/convert-plain-text-hyperlinks-into-html-hyperlinks-in-php/3525863#3525863
+function makeClickableLinks( $str ) {
+	return preg_replace( 
+			'@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@',
+			'<a href="$1" target="_blank">$1</a>',
+			$str );
+}
