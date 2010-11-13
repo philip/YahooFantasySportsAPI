@@ -1,9 +1,12 @@
 Introduction
 ------------
 
-This archives and manages messages from Yahoo Fantasy Sports message boards. There is a 100 message limit at 
-Yahoo, meaning all messages are deleted except the last 100, so the intent of this application is to archive 
-the messages for later use. And eventually add useful features like search.
+This deals with the Yahoo Fantasy Sports API. 
+
+Currently its main task deals with message boards. There is a 100 message limit at
+Yahoo, meaning all messages are deleted except the last 100, so the intent of this
+application is to archive the messages for later use. And eventually add useful
+features like search.
 
 Also note that a users (your) Yahoo username and password are not
 saved nor seen by this application, and instead an OAuth token is
@@ -34,13 +37,14 @@ Usage
 
 * Run authenticate.php to request and save a Yahoo Authentication token
 * Run myinfo.php to view some information about yourself
-* Run messages.php to archive and view remote and local messages
+* Run messages.php to archive and view remote and local message board posts
 * Run rest.php to execute arbitrary REST commands
 * Run transactions.php to archive and view remote and local transactions
 
 Notes
 ------------
 
+* Initially this project was named YahooFantasyMessages and only dealt with message posts
 * This is not well tested and does contain bugs
 * Please find and fix bugs, and cleanup code
 * The functionality is simple, and not pretty (e.g., ugly HTML) but it works
@@ -61,6 +65,7 @@ TODO
 * Add tools for local copies, like full-text search (or similar) 
 * Allow non pecl oauth extension users to utilize this, by optionally allowing the Yahoo oauth wrappers
 * Add documentation
+* Clean leftover code that's specific to the old YahooFantasyMessages project
 
 License
 ------------

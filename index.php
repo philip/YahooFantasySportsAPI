@@ -26,7 +26,7 @@ require './inc/header.php';
  <li><a href="https://api.login.yahoo.com/WSLogin/V1/unlink">Revoke Yahoo OAuth tokens here</a></li>
 </ul>
 <p>
-This is an Open Source application written by Philip Olson, and hosted as <a href="http://github.com/philip/YahooFantasyMessages">YahooFantasyMessages</a> on GitHub.
+This is an Open Source application written by Philip Olson, and hosted as <a href="http://github.com/philip/YahooFantasySportsAPI">YahooFantasySportsAPI</a> on GitHub.
 </p>
 
 <?php
