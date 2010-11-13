@@ -31,3 +31,7 @@ date_default_timezone_set('UTC');
 require INCLUDE_PATH . 'lib/functions.php';
 require INCLUDE_PATH . 'lib/db.php';
 require INCLUDE_PATH . 'lib/yahoomessagearchiver.php';
+
+session_start();
+
+$_VARS = set_local_variables();

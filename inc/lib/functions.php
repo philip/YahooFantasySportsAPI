@@ -1,5 +1,30 @@
 <?php
 
+function set_local_variables() {
+	
+	$vars = array( 'week_num', 'league_key', 'team_num', 'team_key' );
+
+	$tmp = array();
+	foreach ( $vars as $var ) {
+
+		$tmp[$var] = NULL;
+
+		if ( !empty( $_SESSION[$var] ) ) {
+			$tmp[$var] = $_SESSION[$var];
+		}
+		
+		if ( !empty( $_GET[$var] ) ) {
+			$tmp[$var] = $_GET[$var];
+		}
+	}
+	
+	if ( empty($tmp['team_key'] ) && !empty( $tmp['league_key'] ) && !empty( $tmp['team_num'] ) ) {
+		$tmp['team_key'] = $tmp['league_key'] . 't.' . $tmp['team_num'];
+	}
+	
+	return $tmp;
+}
+
 // Hardcoded from here:
 // http://developer.yahoo.com/fantasysports/guide/game-resource.html
 function get_league_ids( $types = 'all' ) {
