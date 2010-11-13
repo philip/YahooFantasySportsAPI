@@ -3,8 +3,8 @@ require './inc/config.inc.php';
 require './inc/header.php';
 
 try {
-	$m = new YahooMessageArchiver(TRUE);
-} catch (OauthException $e) {
+	$m = new YahooMessageArchiver( TRUE );
+} catch ( OauthException $e ) {
 	echo "ERROR: Response: " . $e->lastResponse . PHP_EOL;
 	exit;
 }
@@ -18,12 +18,12 @@ try {
 	echo '<p>Additional information is saved.</p>';
 	
 	echo '<h3>All leagues you have played in</h3>', PHP_EOL;
-	$ids = $m->getLeagueIds(FALSE);
+	$ids = $m->getLeagueIds( FALSE );
 
 	echo '<dl>';
-	foreach ($ids as $id) {
+	foreach ( $ids as $id ) {
 		// @todo A few are missing this, research this
-		if (false === strpos($id['url'], 'http://')) {
+		if ( FALSE === strpos( $id['url'], 'http://' ) ) {
 			$id['url'] = 'http://football.fantasysports.yahoo.com' . $id['url'];
 		}
 		echo '<dt><a href="', $id['url'], '">', $id['name'], '</a></dt>', PHP_EOL;
@@ -31,29 +31,30 @@ try {
 		
 		// @todo Somtimes an empty object, research this, because league has not started? What does 'update' mean?
 		$time = $id['league_update_timestamp'];
-		if (is_object($time)) {
+		if ( is_object( $time ) ) {
 			$time = 'unknown';
 		} else {
-			$time = date('F d, Y', $id['league_update_timestamp']);
+			$time = date( 'F d, Y', $id['league_update_timestamp'] );
 		}
 		echo '<dd>Date of last update: ', $time, '</dd>', PHP_EOL;
 	}
+	echo '</dl>';
 	
 	// @todo not yet implemented, really
-	$ids = $m->getLocalLeagueIds($m->xoauth_yahoo_guid);
+	$ids = $m->getLocalLeagueIds( $m->xoauth_yahoo_guid );
 	if ($ids) {
 		echo '<h3>League Ids stored locally</h3>', PHP_EOL;
 		echo '<pre>';
-		print_r($ids);
+		print_r( $ids );
 		echo '</pre>';
 	}
 
-} catch(OAuthException $e) {
+} catch( OAuthException $e ) {
 
 	print "<pre>";
 	echo "Exception caught!\n";
 	echo "Response: ". $e->lastResponse . "\n";
-	print_r($e);
+	print_r( $e );
 }
 
 require './inc/footer.php';
