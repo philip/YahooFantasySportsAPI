@@ -45,6 +45,6 @@ foreach ( $linfos->league as $linfo ) {
 	echo '<dt><a href="', $linfo->url, '">', $linfo->name, '</a></dt>', PHP_EOL;
 	echo '<dd>Message counts: Remote: (', $mcount, ') and Local: (', $lcount, ')</dd>', PHP_EOL;
 	echo '<dd>Archive remote messages to local: [<a href="messages.php?a=1&lk=', $linfo->league_key, '">execute</a>]</dd>', PHP_EOL;
-	echo '<dd>View messages: [<a href="view.php?lk=', $linfo->league_key, '">execute</a>]</dd>';
+	echo '<dd>View messages: [<a href="view_messages.php?lk=', $linfo->league_key, '">execute</a>]</dd>';
 }
 echo "</dl>";
