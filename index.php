@@ -11,7 +11,7 @@ require './inc/header.php';
  <li><a href="myinfo.php">see your info</a></li>
  <li><a href="messages.php">create and view message archives</a></li>
  <li><a href="transactions.php">create and view transaction archives</a></li>
- <li><a href="rest.php">Run arbritrary rest commands</a></li>
+ <li><a href="rest.php">Run arbitrary REST commands</a></li>
 </ul>
 <p>
  Links of interest (that were used while developing this):
@@ -25,9 +25,6 @@ require './inc/header.php';
  <li><a href="http://developer.yahoo.net/forum/index.php?showforum=42">Yahoo OAuth Forum</a></li>
  <li><a href="https://api.login.yahoo.com/WSLogin/V1/unlink">Revoke Yahoo OAuth tokens here</a></li>
 </ul>
-<p>
-This is an Open Source application written by Philip Olson, and hosted as <a href="http://github.com/philip/YahooFantasySportsAPI">YahooFantasySportsAPI</a> on GitHub.
-</p>
 
 <?php
 require './inc/footer.php';

@@ -9,7 +9,7 @@ try {
 	exit;
 }
 
-$ids = $m->getLeagueIds( TRUE );
+$ids = $m->getLeagueIds( FALSE );
 if ( !$ids ) {
 	echo 'Error: Unable to find league ids for you.', PHP_EOL;
 	exit;

@@ -12,12 +12,17 @@ try {
 	exit;
 }
 
-$guid = $m->retrieve( 'http://social.yahooapis.com/v1/me/guid');
-if (!$guid->value) {
-	$guid = 'unknown';
-} else {
-	$guid = (string) $guid->value;
-}
+$info = $m->getStoredInfo();
+echo '<h3>Stored authentication information</h3>', PHP_EOL;
+echo '<p>GUID of user: ', $info['xoauth_yahoo_guid'], '</p>', PHP_EOL;
+$guid = $info['xoauth_yahoo_guid'];
+
+#$guid = $m->retrieve( 'http://social.yahooapis.com/v1/me/guid');
+#if (!$guid->value) {
+#	$guid = 'unknown';
+#} else {
+#	$guid = (string) $guid->value;
+#}
 ?>
 
 <h1>Run Yahoo arbritrary REST commands</h1>
