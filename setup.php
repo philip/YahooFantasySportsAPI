@@ -13,8 +13,9 @@ foreach ( array( 'oauth', 'simplexml', 'pdo', 'pdo_sqlite' ) as $ext ) {
 }
 
 // @todo are these checks always correct? 100 and 40 string lengths? research this.
-if (!defined('OAUTH_CONSUMER_KEY') || strlen(OAUTH_CONSUMER_KEY) !== 100) {
-	$errors[] = 'OAUTH_CONSUMER_KEY must be properly set, which means 100 characters in length.';
+$_kl = strlen(OAUTH_CONSUMER_KEY);
+if (!defined('OAUTH_CONSUMER_KEY') || ($_kl !== 100 && $_kl !== 92)) {
+	$errors[] = 'OAUTH_CONSUMER_KEY must be properly set, which means 100 or 92 characters in length. Your length is '. $_kl;
 }
 if (!defined('OAUTH_CONSUMER_SECRET') || strlen(OAUTH_CONSUMER_SECRET) !== 40) {
 	$errors[] = 'OAUTH_CONSUMER_SECRET must be properly set, which means 40 characters in length.';
