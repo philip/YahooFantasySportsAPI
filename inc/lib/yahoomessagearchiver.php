@@ -356,12 +356,13 @@ class YahooMessageArchiver extends db {
 
 	// @todo update this for future compatibility, as game_keys are added over time
 	// ^-- See also get_league_ids() in lib/functions.php
+	// Today it contains 2001 - 2016
 	public function getLeagueIds( $current = TRUE ) {
 		
 		if ( $current ) {
 			$query = 'users;use_login=1/games;game_keys=nfl,nhl,nba,mlb/leagues';
 		} else {
-			$query = 'users;use_login=1/games;game_keys=57,49,79,101,124,153,175,199,222,242,58,62,78,102,125,154,176,200,223/leagues';
+			$query = 'users;use_login=1/games;game_keys=57,49,79,101,124,153,175,199,222,242,58,62,78,102,125,154,176,200,223,242,257,273,314,331,348,359/leagues';
 		}
 		
 		$data = $this->retrieve( $query );
