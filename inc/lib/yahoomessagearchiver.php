@@ -6,6 +6,7 @@
 class YahooMessageArchiver extends db {
 	
 	public $yurl = 'http://fantasysports.yahooapis.com/fantasy/v2/';
+	public $yqlurl = "http://query.yahooapis.com/v1/yql?q=";
 	public $log  = array();
 	public $oauth;
 	public $league_id;
@@ -24,13 +25,19 @@ class YahooMessageArchiver extends db {
 	}
 
 	public function fetch($query) {
+		$query = trim($query);
 		// Allow custom api urls, I guess. Not sure why :)
 		if ( 0 !== strpos( $query, 'http://' ) ) {
-			$query = $this->yurl . $query;
+			if (0 === stripos( $query, 'select' ) ) {
+				// Also alow YQL, assuming begins with a select
+				$query = $this->yqlurl . urlencode($query);
+			} else {
+				$query = $this->yurl . $query;
+			}
 		}
 		return $this->oauth->fetch( $query );
 	}
-	
+
 	public function retrieve( $query ) {
 		$out = $this->fetch( $query );
 		if ( !$out ) {
