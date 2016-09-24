@@ -1,9 +1,9 @@
 Introduction
 ------------
 
-This deals with the Yahoo Fantasy Sports API. 
+This deals with the Yahoo Fantasy Sports API.
 
-Currently its main task deals with message boards. There is a 100 message limit at
+Originally its main task deals with message boards. There is a 100 message limit at
 Yahoo, meaning all messages are deleted except the last 100, so the intent of this
 application is to archive the messages for later use. And eventually add useful
 features like search.
@@ -13,10 +13,13 @@ saved nor seen by this application, and instead an OAuth token is
 used which provides temporary access to some information, like
 Fantasy Sports message board posts.
 
+From here you can also execute arbitrary REST and YQL commands to the
+Yahoo Fantasy Sports API, today that includes years 2001-2016.
+
 Requirements
 ------------
 
-* PHP 5
+* PHP 5+
 * PHP Extensions: simplexml (default), PDO (default), PDO SQLite driver* (default), and OAuth (in PECL, not standard)
 * Optionally edit to use a non-sqlite driver, as any PDO friendly DB should work (all queries are simple)
 * Yahoo API Key: <https://developer.apps.yahoo.com/dashboard/createKey.html>
@@ -38,14 +41,14 @@ Usage
 * Run authenticate.php to request and save a Yahoo Authentication token
 * Run myinfo.php to view some information about yourself
 * Run messages.php to archive and view remote and local message board posts
-* Run rest.php to execute arbitrary REST commands
+* Run rest.php to execute arbitrary REST or YQL commands
 * Run transactions.php to archive and view remote and local transactions
 
 Notes
 ------------
 
-* Initially this project was named YahooFantasyMessages and only dealt with message posts
-* This is not well tested and does contain bugs
+* Initially this project was named YahooFantasyMessages and only dealt with message posts, which is why some files use this name
+* This is not well tested and does contain bugs, although as of 2016 it works (for me)
 * Please find and fix bugs, and cleanup code
 * The functionality is simple, and not pretty (e.g., ugly HTML) but it works
 * Revoking OAuth tokens for Yahoo applications can be done here: <https://api.login.yahoo.com/WSLogin/V1/unlink>
@@ -53,6 +56,8 @@ Notes
 TODO
 ------------
 
+* The bulk of this code is rather old, so update it
+* ...
 * Find and report bugs, and fix them
 * Add transaction archiving (although these are saved forever (i.e., no 100 limit))
 * Add prettier output instead of print_r() everywhere
@@ -64,7 +69,7 @@ TODO
 * Add data export options, like to CSV/Excel
 * Add tools for local copies, like full-text search (or similar) 
 * Allow non pecl oauth extension users to utilize this, by optionally allowing the Yahoo oauth wrappers
-* Add documentation
+* Add documentation, explaining that both REST and YQL work
 * Clean leftover code that's specific to the old YahooFantasyMessages project
 
 License
