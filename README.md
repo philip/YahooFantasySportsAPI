@@ -3,15 +3,12 @@ Introduction
 
 This deals with the Yahoo Fantasy Sports API.
 
-Originally its main task deals with message boards. There is a 100 message limit at
-Yahoo, meaning all messages are deleted except the last 100, so the intent of this
-application is to archive the messages for later use. And eventually add useful
-features like search.
+Originally its main task was to archive message boards, which has/had a 100
+message limit. Meaning, Yahoo deleted (forever) all messages except the last
+100 so this archived them. This is no longer a use case.
 
-Also note that a users (your) Yahoo username and password are not
-saved nor seen by this application, and instead an OAuth token is
-used which provides temporary access to some information, like
-Fantasy Sports message board posts.
+This authenticates against your Yahoo login using an OAuth token, so this
+system does not have access to your username / password.
 
 From here you can also execute arbitrary REST and YQL commands to the
 Yahoo Fantasy Sports API, today that includes years 2001-2016.
@@ -20,46 +17,46 @@ Requirements
 ------------
 
 * PHP 5+
-* PHP Extensions: simplexml (default), PDO (default), PDO SQLite driver* (default), and OAuth (in PECL, not standard)
+* PHP Extensions: simplexml (default), PDO (default), PDO SQLite driver* (default), and OAuth (in PECL, NOT standard)
 * Optionally edit to use a non-sqlite driver, as any PDO friendly DB should work (all queries are simple)
 * Yahoo API Key: <https://developer.apps.yahoo.com/dashboard/createKey.html>
 * setup.php checks for all of these requirements, so it'll yell at you if not ready
-* Note: It's rare for a host to have or enable the OAuth extension.
+* Note: It's rare for a host to have or enable the OAuth extension. You must do this yourself.
+* Todo: Remove OAuth extension requirement, and replace with a version that only requires Curl.
 
 Installation
 ------------
 
-* Place all files in a web accessible directory
+* Place files in a web accessible directory
 * Determine where the sqlite database will be loaded
 * Modify inc/config.inc.php according to your setup
 * Run setup.php
-* Setup will either state problems or say installation was a success
+* It will either state problems or say installation was a success
 
 Usage
 ------------
 
 * Run authenticate.php to request and save a Yahoo Authentication token
 * Run myinfo.php to view some information about yourself
-* Run messages.php to archive and view remote and local message board posts
+* Run transactions.php to view transactions for a particular league of yours
 * Run rest.php to execute arbitrary REST or YQL commands
-* Run transactions.php to archive and view remote and local transactions
 
 Notes
 ------------
 
-* Initially this project was named YahooFantasyMessages and only dealt with message posts, which is why some files use this name
+* Initially this project was named YahooFantasyMessages and only dealt with message posts, which is why leftover code exists
 * This is not well tested and does contain bugs, although as of 2016 it works (for me)
-* Please find and fix bugs, and cleanup code
+* Please find and fix or report bugs here, and/or cleanup code
 * The functionality is simple, and not pretty (e.g., ugly HTML) but it works
 * Revoking OAuth tokens for Yahoo applications can be done here: <https://api.login.yahoo.com/WSLogin/V1/unlink>
 
 TODO
 ------------
 
-* The bulk of this code is rather old, so update it
-* ...
+* Important: the bulk of this code is rather old, so update it
+* Important: allow non PECL OAuth extension users to utilize this, by optionally allowing the Yahoo oauth wrappers
 * Find and report bugs, and fix them
-* Add transaction archiving (although these are saved forever (i.e., no 100 limit))
+* Add transaction archiving, and related graph generation
 * Add prettier output instead of print_r() everywhere
 * Test on other setups, and as other users
 * Make it multi-user friendly, and authentication in general
@@ -67,10 +64,10 @@ TODO
 * Don't refresh the token so often (near every request)
 * Make less rest calls by combining queries (and do more caching/local storage)
 * Add data export options, like to CSV/Excel
-* Add tools for local copies, like full-text search (or similar) 
-* Allow non pecl oauth extension users to utilize this, by optionally allowing the Yahoo oauth wrappers
+* Add tools for local copies, like full-text search (or similar)
 * Add documentation, explaining that both REST and YQL work
-* Clean leftover code that's specific to the old YahooFantasyMessages project
+* Clean leftover code that's specific to the old YahooFantasyMessages project (done?)
+* Change license to something simpler and more open, like MIT
 
 License
 ------------
