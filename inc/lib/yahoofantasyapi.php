@@ -1,10 +1,10 @@
 <?php
-/* 
-	Wow, this hack grew beyond itself over time, but does indeed work. 
+/*
+	Wow, this hack grew beyond itself over time, but does indeed work.
 	@todo refector (which means, in the future, the API will change)
 */
-class YahooMessageArchiver extends db {
-	
+class YahooFantasyAPI extends db {
+
 	public $yurl = 'http://fantasysports.yahooapis.com/fantasy/v2/';
 	public $yqlurl = "http://query.yahooapis.com/v1/yql?q=";
 	public $log  = array();
@@ -12,7 +12,8 @@ class YahooMessageArchiver extends db {
 	public $league_id;
 	public $league_key;
 	public $xoauth_yahoo_guid;
-	
+	public $teamnames = array();
+
 	public function __construct( $refresh = FALSE ) {
 
 		// New oauth instance
@@ -47,7 +48,7 @@ class YahooMessageArchiver extends db {
 			$this->log( 'could not retrieve last oauth response', 'err', debug_backtrace() );
 			return FALSE;
 		}
-	
+
 		$data = simplexml_load_string($response);
 		if ( !$data ) {
 			$this->log( 'could not parse retrieved xml', 'err', debug_backtrace() );
@@ -62,22 +63,6 @@ class YahooMessageArchiver extends db {
 
 	public function getLog() {
 		return $this->log;
-	}
-
-	// @todo why did I make getLocalMessages and getMessages have different signatures? Fix this madness.
-	public function getMessages( $start = 0, $count = 100, $league_key = '' ) {
-		if ( empty( $league_key ) ) {
-			$league_key = $this->league_key;
-		}
-		
-		$query = 'league/' . $league_key . '/messages;start=' . $start . ';count=' . $count;
-		return $this->retrieve( $query );
-	}
-
-	public function getMessageCount($league_key) {
-		$query = 'league/' . $league_key . '/messages;start=1;count=1';
-		$info  = $this->retrieve( $query );
-		return (int) $info->league->messages->message->message_id;
 	}
 
 	public function refreshAccess() {
@@ -108,7 +93,7 @@ class YahooMessageArchiver extends db {
 				VALUES (:xoauth_yahoo_guid,:oauth_token,:oauth_token_secret,:oauth_expires_in,:oauth_session_handle,:oauth_authorization_expires_in, :time_saved)
 				";
 			}
-			
+
 		} catch ( PDOException $e ) {
 			$this->log( 'could not run column count query: ' . $e->getMessage(), 'err', debug_backtrace() );
 			$this->fatal_error( $e->getMessage() );
@@ -134,12 +119,12 @@ class YahooMessageArchiver extends db {
 				':time_saved'						=> time() + (int) $access['oauth_expires_in'],
 			);
 			$stmt->execute( $params );
-		
+
 		} catch ( PDOException $e ) {
 			$this->log( 'could not run query: ' . $e->getMessage(), 'err', debug_backtrace() );
 			$this->fatal_error( $e->getMessage() );
 		}
-		
+
 		$this->xoauth_yahoo_guid = $access['xoauth_yahoo_guid'];
 		return TRUE;
 	}
@@ -154,7 +139,7 @@ class YahooMessageArchiver extends db {
 		if( !self::$dbh ) {
 			$this->connect();
 		}
-		
+
 		// SQLite lacks "INSERT ... ON DUPLICATE KEY", so, I did this. Better ideas?
 		$sql = "SELECT COUNT(*) FROM yahoo_auth WHERE xoauth_yahoo_guid = '$access[xoauth_yahoo_guid]'";
 		try {
@@ -163,7 +148,7 @@ class YahooMessageArchiver extends db {
 			if ( $res->fetchColumn() > 0 ) {
 				// Update
 				$sql = "
-				UPDATE yahoo_auth SET xoauth_yahoo_guid=:xoauth_yahoo_guid, oauth_token=:oauth_token, oauth_verifier=:oauth_verifier, oauth_token_secret=:oauth_token_secret, 
+				UPDATE yahoo_auth SET xoauth_yahoo_guid=:xoauth_yahoo_guid, oauth_token=:oauth_token, oauth_verifier=:oauth_verifier, oauth_token_secret=:oauth_token_secret,
 				oauth_expires_in=:oauth_expires_in, oauth_session_handle=:oauth_session_handle, oauth_authorization_expires_in=:oauth_authorization_expires_in, time_saved=:time_saved
 				WHERE xoauth_yahoo_guid = '$access[xoauth_yahoo_guid]'
 				";
@@ -174,7 +159,7 @@ class YahooMessageArchiver extends db {
 				VALUES (:xoauth_yahoo_guid,:oauth_token,:oauth_verifier,:oauth_token_secret,:oauth_expires_in,:oauth_session_handle,:oauth_authorization_expires_in,:time_saved)
 				";
 			}
-			
+
 		} catch ( PDOException $e ) {
 			$this->log( 'could not run column count query: ' . $e->getMessage(), 'err', debug_backtrace() );
 			$this->fatal_error( $e->getMessage() );
@@ -194,7 +179,7 @@ class YahooMessageArchiver extends db {
 			);
 
 			$stmt->execute( $params );
-		
+
 		} catch ( PDOException $e ) {
 			$this->log( 'could not run query: ' . $e->getMessage(), 'err', debug_backtrace() );
 			$this->fatal_error( $e->getMessage() );
@@ -211,7 +196,7 @@ class YahooMessageArchiver extends db {
 		if( !self::$dbh ) {
 			$this->connect();
 		}
-		
+
 		// SQLite lacks "INSERT ... ON DUPLICATE KEY", so, I did this. Better ideas?
 		$sql = "SELECT COUNT(*) FROM yahoo_auth WHERE oauth_token_secret = '$request[oauth_token_secret]'";
 		try {
@@ -220,7 +205,7 @@ class YahooMessageArchiver extends db {
 			if ( $res->fetchColumn() > 0 ) {
 				$sql =
 				"
-					UPDATE yahoo_auth SET oauth_token=:oauth_token, oauth_token_secret=:oauth_token_secret, oauth_expires_in=:oauth_expires_in, 
+					UPDATE yahoo_auth SET oauth_token=:oauth_token, oauth_token_secret=:oauth_token_secret, oauth_expires_in=:oauth_expires_in,
 					xoauth_request_auth_url=:xoauth_request_auth_url, oauth_callback_confirmed=:oauth_callback_confirmed, time_saved=:time_saved
 					WHERE oauth_token_secret = '$request[oauth_token_secret]'
 				";
@@ -231,7 +216,7 @@ class YahooMessageArchiver extends db {
 					VALUES (:oauth_token, :oauth_token_secret, :oauth_expires_in, :xoauth_request_auth_url, :oauth_callback_confirmed, :time_saved)
 				";
 			}
-			
+
 		} catch ( PDOException $e ) {
 			$this->log( 'could not run column count query: ' . $e->getMessage(), 'err', debug_backtrace() );
 			$this->fatal_error( $e->getMessage() );
@@ -247,16 +232,16 @@ class YahooMessageArchiver extends db {
 				':oauth_callback_confirmed'			=> $request['oauth_callback_confirmed'],
 				':time_saved'						=> time() + (int) $request['oauth_expires_in'],
 			);
-			
+
 			$stmt->execute( $params );
-		
+
 		} catch ( PDOException $e ) {
 			$this->log( 'could not run query: ' . $e->getMessage(), 'err', debug_backtrace() );
 			$this->fatal_error( $e->getMessage() );
 		}
 		return TRUE;
 	}
-	
+
 	public function getStoredInfo() {
 		if( !self::$dbh ) {
 			$this->connect();
@@ -265,7 +250,7 @@ class YahooMessageArchiver extends db {
 			// @todo do we really need to keep them all? Fix this hack
 			$res  = self::$dbh->query( 'SELECT * FROM yahoo_auth ORDER BY time_saved DESC LIMIT 1' );
 			$row  = $res->fetch( PDO::FETCH_ASSOC );
-			
+
 			if ( empty($row) || count($row) === 0 ) {
 				$this->log( 'info is not stored', 'info', debug_backtrace() );
 			}
@@ -292,86 +277,21 @@ class YahooMessageArchiver extends db {
 		$lkeys = rtrim( $lkeys, ',' );
 
 		$linfo = $this->retrieve( "leagues;league_keys=$lkeys" );
-	
-		return $linfo->leagues;
-	}
-	
-	public function insertMessage( $league_key, $data ) {
-		if( !self::$dbh ) {
-			$this->connect();
-		}
-		
-		$league_id = substr( $league_key, strrpos( $league_key, '.' ) + 1 );
-		
-		// Consider not using "replace into"
-		// @todo allow inserting only "new" messages
-		$sql = "REPLACE INTO messages 
-				(mid, message_id, subject, team_key, display_name, guid, team_name, timestamp, text, league_key, league_id)
-				VALUES (:mid, :message_id, :subject, :team_key, :display_name, :guid, :team_name, :timestamp, :text, :league_key, :league_id)
-		";
-		try {
-			$stmt = self::$dbh->prepare( $sql );
-			
-			$params = array(
-				':mid'			=> (string) $data->message_id . '_' . (int) $league_id, // wanted something unique
-				':message_id'	=> (string) $data->message_id,
-				':subject'		=> (string) $data->subject,
-				':team_key'		=> (string) $data->team_key,
-				':display_name'	=> (string) $data->display_name,
-				':guid'			=> (string) $data->guid,
-				':team_name'	=> (string) $data->team_name,
-				':timestamp'	=> (int)    $data->timestamp,
-				':text'			=> (string) $data->text,
-				':league_key'	=> (string) $league_key,
-				':league_id'	=> (int)    $league_id,
-			);
-			$stmt->execute( $params );
-			return TRUE;
-		
-		} catch ( PDOException $e ) {
-			$this->log( 'could not run query: ' . $e->getMessage(), 'err', debug_backtrace() );
-			$this->fatal_error( $e->getMessage() );
-		}
-	}
-	
-	public function insertMessages( $league_key, $datas ) {
-		foreach ( $datas as $data ) {
-			$this->insertMessage( $league_key, $data );
-		}
-	}
-	
-	public function getLocalMessages( $league_key ) {
-		if( !self::$dbh ) {
-			$this->connect();
-		}
-		
-		$sql = "SELECT * FROM messages WHERE league_key = '$league_key' ORDER BY message_id";
-		try {
-			$res  = self::$dbh->query( $sql );
-			$rows = $res->fetchAll( PDO::FETCH_ASSOC );
-			
-			if ( empty( $row ) || count( $row ) === 0 ) {
-				$this->log( 'no messages are stored', 'info', debug_backtrace());
-			}
-			return $rows;
 
-		} catch (PDOException $e) {
-			$this->log( 'could not run query: ' . $e->getMessage(), 'err', debug_backtrace() );
-			$this->fatal_error( $e->getMessage() );
-		}
+		return $linfo->leagues;
 	}
 
 	// @todo update this for future compatibility, as game_keys are added over time
 	// ^-- See also get_league_ids() in lib/functions.php
 	// Today it contains 2001 - 2016
 	public function getLeagueIds( $current = TRUE ) {
-		
+
 		if ( $current ) {
 			$query = 'users;use_login=1/games;game_keys=nfl,nhl,nba,mlb/leagues';
 		} else {
 			$query = 'users;use_login=1/games;game_keys=57,49,79,101,124,153,175,199,222,242,58,62,78,102,125,154,176,200,223,242,257,273,314,331,348,359/leagues';
 		}
-		
+
 		$data = $this->retrieve( $query );
 		if ( !$data || count( $data ) === 0 ) {
 			return false;
@@ -383,17 +303,18 @@ class YahooMessageArchiver extends db {
 		}
 		return $info;
 	}
-	
+
+	// TODO: Not sure if storing league ids works at the moment
 	public function getLocalLeagueIds( $xoauth_yahoo_guid ) {
 		if( !self::$dbh ) {
 			$this->connect();
 		}
-		
+
 		$sql = "SELECT * FROM ids WHERE xoauth_yahoo_guid = '$xoauth_yahoo_guid'";
 		try {
 			$res  = self::$dbh->query( $sql );
 			$rows = $res->fetchAll( PDO::FETCH_ASSOC );
-			
+
 			if ( empty( $row ) || count( $row ) === 0 ) {
 				$this->log('no ids for $xoauth_yahoo_guid are stored', 'info', debug_backtrace() );
 			}
@@ -414,15 +335,15 @@ class YahooMessageArchiver extends db {
 		if( !self::$dbh ) {
 			$this->connect();
 		}
-		
+
 		foreach ( $ids as $id ) {
-			$sql = "REPLACE INTO ids 
+			$sql = "REPLACE INTO ids
 					(xoauth_yahoo_guid, league_id, league_key)
 					VALUES (:xoauth_yahoo_guid, :league_id, :league_key)
 			";
 			try {
 				$stmt = self::$dbh->prepare( $sql );
-			
+
 				$params = array(
 					':xoauth_yahoo_guid'	=> (string) $xoauth_yahoo_guid,
 					':league_id'			=> (int)    $id['league_id'],
@@ -430,24 +351,163 @@ class YahooMessageArchiver extends db {
 				);
 				$stmt->execute( $params );
 				return TRUE;
-		
+
 			} catch ( PDOException $e ) {
 				$this->log( 'could not run query: ' . $e->getMessage(), 'err', debug_backtrace() );
 				$this->fatal_error( $e->getMessage() );
 			}
 		}
 	}
-	
+
+	public function getTransactions($league_key) {
+		$rest = $this->yurl . "leagues;league_keys=". $league_key ."/transactions";
+		$out = $this->retrieve($rest);
+		if (!$out) {
+			$this->log( 'transaction retrieval failed when executing: '. $rest, 'err', debug_backtrace() );
+			return false;
+		}
+		$a = $this->xml2array($out->leagues->league->transactions);
+
+		#echo "<pre>";
+		#print_r($a);
+		#exit;
+
+		$trans = array();
+		foreach ($a['transaction'] as $t) {
+
+			if (!empty($t['players'])) {
+				// Hack to get around API where add/drop = array but add or drop do not.
+				if (!empty($t['players']['player']['player_key'])) {
+					$_tmp = $t['players']['player'];
+					unset($t['players']['player']);
+					$t['players']['player'][0] = $_tmp;
+				}
+
+				$timestamp = is_numeric($t['timestamp']) ? (int) $t['timestamp'] : strtotime($t['timestamp']);
+
+				// TODO: Most code assumes FAAB is used, those without FAAB might see $0 for all waiver moves.
+				// TODO: If available, see if waiver position data is available when not using FAAB
+				if (isset($t['faab_bid'])) {
+					$bid = (int) $t['faab_bid'];
+				} else {
+					$bid = 0;
+				}
+
+				foreach ($t['players']['player'] as $player) {
+
+					$team_key  = empty($player['transaction_data']['destination_team_key'])  ? $player['transaction_data']['source_team_key']  : $player['transaction_data']['destination_team_key'];
+					$team_name = empty($player['transaction_data']['destination_team_name']) ? $player['transaction_data']['source_team_name'] : $player['transaction_data']['destination_team_name'];
+
+					// While we're here, let's get team names
+					// Name from most recent transaction will be assigned to the team key
+					@$this->teamnames[$team_key] = $team_name;
+
+					// One way to display / view this information
+					$vtype = "";
+					$transaction = $player['transaction_data'];
+					if ($transaction['source_type'] === 'freeagents') {
+						$vtype = "FA";
+					} elseif ($transaction['source_type'] === 'waivers') {
+						if (empty($transaction['bid'])) {
+							$vtype = '$0';
+						} else {
+							$vtype = '$' . (int) $transaction['bid'];
+						}
+					} else {
+						if ($transaction['type'] === 'trade') {
+							$vtype = 'Trade';
+						} elseif ($transaction['type'] === 'drop') {
+							$vtype = 'Drop';
+						} else {
+							$vtype = 'Uknown';
+						}
+					}
+
+					$trans[] = array(
+						'player_key'	=> $player['player_key'],
+						'player_name'	=> $player['name']['full'],
+						'type'			=> $player['transaction_data']['type'],
+						'vtype'			=> $vtype,
+						'source_type'	=> $player['transaction_data']['source_type'],
+						'team'			=> $player['editorial_team_abbr'],
+						'timestamp'		=> $timestamp,
+						'manager'		=> $team_key,
+						'bid'			=> $bid,
+					);
+
+				}
+			}
+		}
+		return $trans;
+	}
+
+	public function getTeamFromTransaction($transaction, $type = 'key') {
+
+		$transaction = (array) $transaction;
+
+		if ($type === 'key') {
+			if (!empty($transaction['destination_team_key'])) {
+				$key =  $transaction['destination_team_key'];
+			} elseif (!empty($transaction['source_team_key'])) {
+				$key = $transaction['source_team_key'];
+			} else {
+				$key = 'unknown';
+			}
+			return $key;
+		}
+
+		if ($type === 'name') {
+			if (!empty($transaction['destination_team_name'])) {
+				$name =  $transaction['destination_team_name'];
+			} elseif (!empty($transaction['source_team_name'])) {
+				$name = $transaction['source_team_name'];
+			} else {
+				$name = 'unknown';
+			}
+			return $name;
+		}
+	}
+
+	// @todo why did I make getLocalMessages and getMessages have different signatures? Fix this madness.
+	// Note: message board posts are no longer mentioned in the official API, so it must be deprecated
+	public function getMessages( $start = 0, $count = 100, $league_key = '' ) {
+	    if ( empty( $league_key ) ) {
+	        $league_key = $this->league_key;
+	    }
+	    $query = 'league/' . $league_key . '/messages;start=' . $start . ';count=' . $count;
+	    return $this->retrieve( $query );
+	}
+
+	// Note: message board posts are no longer mentioned in the official API, so it must be deprecated
+	public function getMessageCount($league_key) {
+	    $query = 'league/' . $league_key . '/messages;start=1;count=1';
+	    $info  = $this->retrieve( $query );
+		if (is_numeric( (string) $info->league->messages->message->message_id)) {
+			return (int) $info->league->messages->message->message_id;
+		} else {
+			return false;
+		}
+	}
+
+	// TODO: this code was written when XML was available via the API, but consider rewrite using JSON only
+	private function xml2array ( $xmlObject, $out = array () )
+	{
+	        foreach ( (array) $xmlObject as $index => $node ) {
+	            $out[$index] = ( is_object ( $node ) ||  is_array ( $node ) ) ? $this->xml2array ( $node ) : $node;
+			}
+	        return $out;
+	}
+
 	// Don't remember if I use this, but it was temporary
 	public static function printR( $var, $title = '', $exit = FALSE ) {
-		if ( $title ) {
-			echo '<h2>', $title, '</h2>', PHP_EOL;
-		}
-		echo '<pre>', PHP_EOL;
-		print_r( $var );
-		echo '</pre>', PHP_EOL;
-		if ( $exit ) {
-			exit;
-		}
+	    if ( $title ) {
+	        echo '<h2>', $title, '</h2>', PHP_EOL;
+	    }
+	    echo '<pre>', PHP_EOL;
+	    print_r( $var );
+	    echo '</pre>', PHP_EOL;
+	    if ( $exit ) {
+	        exit;
+	    }
 	}
 }

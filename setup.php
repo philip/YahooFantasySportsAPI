@@ -1,6 +1,6 @@
 <?php
 require './inc/config.inc.php';
-require './inc/lib/yahoomessagesetup.php';
+require './inc/lib/yahoofantasyapisetup.php';
 require './inc/header.php';
 
 $errors = array();
@@ -29,12 +29,13 @@ if ( file_exists( DB_PATH ) ) {
 			$errors[] = 'SQLite file already exists, but is empty, yet I am unable to delete it. Please fix.';
 		}
 	} else {
-		$errors[] = 'SQLite file already exists (this is already setup). See config.inc.php.';
+		$errors[] = 'SQLite file already exists (this is already set up). See config.inc.php.';
 	}
 }
 
 if ( !empty( $errors ) ) {
-	echo 'ERROR: The setup could not take place due to the following reasons: ';
+	echo "<h3>Not Ready to Set Up</h3>";
+	echo '<p>ERROR: The setup could not take place due to the following reasons:</p>';
 	echo '<ul>';
 	foreach ( $errors as $error ) {
 		echo '<li>', $error, '</li>', PHP_EOL;
@@ -42,14 +43,16 @@ if ( !empty( $errors ) ) {
 	echo '<li>Note: Your DB_PATH is set to: [', DB_PATH, '] in config.inc.php</li>';
 	echo '</ul>';
 	exit;
+} else {
+	echo "<h3>Begin Set Up</h3>";
+	echo "<p>Everything seems ready, so let the set up begin.</p>";
 }
 
 // Begin doing the setup
-$s = new YahooMessageSetup();
+$s = new YahooFantasyAPISetup();
 
 // @todo document these
 $s->createAuthTable();
-$s->createMessageTable();
 
 // @todo use these
 $s->createIdsTable();

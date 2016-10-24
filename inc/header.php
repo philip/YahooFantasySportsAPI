@@ -11,7 +11,6 @@
    <ul>
     <li><a href="<?php echo BASEURL ?>">home</a></li>
     <li><a href="myinfo.php">myinfo</a></li>
-    <li><a href="settings.php">settings</a></li>
     <li><a href="setup.php">setup</a></li>
     <li><a href="authenticate.php">authenticate</a></li>
     <li><a href="messages.php">messages</a></li>

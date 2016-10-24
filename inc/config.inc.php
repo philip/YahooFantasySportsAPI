@@ -37,8 +37,4 @@ if (DEBUG_MODE) {
 // Includes we use on every page
 require INCLUDE_PATH . 'lib/functions.php';
 require INCLUDE_PATH . 'lib/db.php';
-require INCLUDE_PATH . 'lib/yahoomessagearchiver.php';
-
-session_start();
-
-$_VARS = set_local_variables();
+require INCLUDE_PATH . 'lib/yahoofantasyapi.php';

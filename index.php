@@ -2,17 +2,16 @@
 require './inc/config.inc.php';
 require './inc/header.php';
 ?>
-<p>
- This simply links to pages that can be useful accessing via the web.
-</p>
-<ul>
- <li><a href="setup.php">setup</a></li>
- <li><a href="authenticate.php">authenticate to yahoo</a></li>
- <li><a href="myinfo.php">see your info</a></li>
- <li><a href="messages.php">create and view message archives</a></li>
- <li><a href="transactions.php">create and view transaction archives</a></li>
- <li><a href="rest.php">Run arbitrary REST commands</a></li>
-</ul>
+<h3>Welcome</h3>
+<p>Before playing with this rough application, you must first authenticate with your Yahoo login.</p>
+<ol>
+ <li>First, check if your system is ready: <a href="setup.php">Ready for Set Up?</a></li>
+ <li>Next, authenticate: <a href="authenticate.php">Authenticate using Yahoo</a></li>
+ <li>Next, see if it worked: <a href="myinfo.php">See your Fantasy Sports related information</a></li>
+ <li>You might want to <a href="transactions.php">view transaction archives</a> for a particular league</li>
+ <li>Or you might <a href="rest.php">execute arbitrary REST or YQL commands</a></li>
+</ol>
+<h3>See Also</h3>
 <p>
  Links of interest (that were used while developing this):
 </p>
@@ -25,6 +24,11 @@ require './inc/header.php';
  <li><a href="http://developer.yahoo.net/forum/index.php?showforum=42">Yahoo OAuth Forum</a></li>
  <li><a href="https://api.login.yahoo.com/WSLogin/V1/unlink">Revoke Yahoo OAuth tokens here</a></li>
 </ul>
+<h3>Notes</h3>
+<p>Although the Yahoo Fantasy Sports API is functioning, it is no longer actively maintained
+    by Yahoo. For this reason, you will notice the official documentation is broken, and that
+    the Fantasy Sports forum no longer exists. However, the API functions so have fun!
+</p> 
 
 <?php
 require './inc/footer.php';

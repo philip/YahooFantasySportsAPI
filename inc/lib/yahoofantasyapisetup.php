@@ -1,7 +1,7 @@
 <?php
 // @todo clean this up, a method per table needed?
-class YahooMessageSetup extends db {
-	
+class YahooFantasyApiSetup extends db {
+
 	public $log;
 
 	public function createAuthTable() {
@@ -46,7 +46,7 @@ class YahooMessageSetup extends db {
 			$this->fatal_error( $e->getMessage() );
 		}
 	}
-	
+
 	public function createMessageTable() {
 		if( !self::$dbh ) {
 			$this->connect();

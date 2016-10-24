@@ -9,7 +9,7 @@ try {
 	$o = new OAuth( OAUTH_CONSUMER_KEY, OAUTH_CONSUMER_SECRET, OAUTH_SIG_METHOD_HMACSHA1, OAUTH_AUTH_TYPE_URI );
 	$o->enableDebug();
 
-	$m = new YahooMessageArchiver( FALSE );
+	$m = new YahooFantasyAPI( FALSE );
 
 	/********************************************************************************************************************************************
 	/** Stage #1: Request Token
@@ -19,13 +19,13 @@ try {
 		$response = $o->getRequestToken( 'https://api.login.yahoo.com/oauth/v2/get_request_token', APPLICATION_URL . $_SERVER['SCRIPT_NAME'] );
 
 		if ( $response && is_array( $response ) ) {
-		
+
 			if ( !$m->saveRequest( $response ) ) {
 				echo "Unable to save response.";
 				$m->printR( $m->getLog() );
 				exit;
 			}
-		
+
 			// @todo add error reporting
 			if ( empty( $response['xoauth_request_auth_url'] ) ) {
 				$m->printR( $m->getLog() );
@@ -58,7 +58,7 @@ try {
 	}
 
 	if ( $request_token_info && is_array( $request_token_info ) ) {
-	
+
 		$o->setToken( $request_token_info['oauth_token'], $request_token_info['oauth_token_secret'] );
 
 		if ( empty( $_GET['oauth_verifier'] ) ) {
@@ -71,7 +71,7 @@ try {
 			echo 'Error: Received invalid access token. Try again.', PHP_EOL;
 			exit;
 		}
-	
+
 		$m->saveAccess( $response, $_GET['oauth_verifier'] );
 
 		// Here means we likely have a nice access_token, so are ready to rock

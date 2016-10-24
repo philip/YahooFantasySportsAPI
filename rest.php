@@ -5,7 +5,7 @@ require './inc/header.php';
 define('PHP_SELF', htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'));
 
 try {
-	$m = new YahooMessageArchiver( TRUE );
+	$m = new YahooFantasyAPI( TRUE );
 
 } catch ( OauthException $e ) {
 	echo 'ERROR: Response: ', $e->lastResponse, PHP_EOL;
@@ -16,13 +16,6 @@ $info = $m->getStoredInfo();
 echo '<h3>Stored authentication information</h3>', PHP_EOL;
 echo '<p>GUID of user: ', $info['xoauth_yahoo_guid'], '</p>', PHP_EOL;
 $guid = $info['xoauth_yahoo_guid'];
-
-#$guid = $m->retrieve( 'http://social.yahooapis.com/v1/me/guid');
-#if (!$guid->value) {
-#	$guid = 'unknown';
-#} else {
-#	$guid = (string) $guid->value;
-#}
 ?>
 
 <h1>Run Yahoo arbitrary REST or YQL commands</h1>
@@ -31,8 +24,8 @@ $guid = $info['xoauth_yahoo_guid'];
 <p>Note: This OAuth token is specific to Fantasy Sports although a lot of other (but not all) information can be accessed here too. Like your profile.</p>
 <p>Examples:</p>
 <ul>
- <li>REST: view your team(s) info: users;use_login=1/games;game_keys=nfl,mlb,nba,nhl/teams [<a href="<?php echo PHP_SELF ?>?command=users;use_login=1/games;game_keys=nfl,mlb,nba,nhl/teams">run</a>]</li>
- <li>YQL view your team(s) info in 2016: SELECT * FROM fantasysports.leagues where use_login=1 and game_key='359' [<a href="<?php echo PHP_SELF ?>?command=SELECT * FROM fantasysports.leagues where use_login=1 and game_key='359'">run</a>]</li>
+ <li>REST: view your team(s) info for the current year: users;use_login=1/games;game_keys=nfl,mlb,nba,nhl/teams [<a href="<?php echo PHP_SELF ?>?command=users;use_login=1/games;game_keys=nfl,mlb,nba,nhl/teams">run</a>]</li>
+ <li>YQL: view your team(s) info in 2016: SELECT * FROM fantasysports.leagues where use_login=1 and game_key='359' [<a href="<?php echo PHP_SELF ?>?command=SELECT * FROM fantasysports.leagues where use_login=1 and game_key='359'">run</a>]</li>
 </ul>
 
 <form action="<?php echo PHP_SELF ?>" method="GET">

@@ -3,9 +3,9 @@
 // @todo Do something useful here with transactions although they are archived at Yahoo alrady (no 100 limit)
 require './inc/config.inc.php';
 require './inc/header.php';
-	
+
 try {
-	$m = new YahooMessageArchiver( TRUE );
+	$m = new YahooFantasyAPI( TRUE );
 } catch (OauthException $e) {
 	echo 'ERROR: Response: ', $e->lastResponse, PHP_EOL;
 	exit;
@@ -16,42 +16,37 @@ try {
 $lid  = empty( $_GET['lid'] )  ? FALSE : trim( $_GET['lid'] );
 $type = empty( $_GET['type'] ) ? 'add' : trim( $_GET['type'] );
 
-/*
-if (empty($lids)) {
-	$lids = $m->getLeagueIds( TRUE );
+if (empty($lid)) {
+	$lids = $m->getLeagueIds( FALSE );
 	if ( !$lids ) {
 		echo 'Error: Unable to find league ids for you.', PHP_EOL;
 		exit;
 	}
+	echo "<h3>Choose a League ID</h3>";
+	echo "<ul>";
+	foreach ($lids as $lid) {
+		echo "<li>";
+		echo '<a href="transactions.php?lid='. $lid['league_key'] . '">'. $lid['name'] . ' ('. $lid['season'] . ')</a>';
+		echo "</li>";
+	}
+	exit;
 }
-*/
 
-if (empty( $lid )) {
-	$lid = '238.l.627060'; // public baseball league, for testing
-}
-	
-$transactions = $m->retrieve( "http://fantasysports.yahooapis.com/fantasy/v2/league/{$lid}/transactions;type=$type" );
+$transactions = $m->getTransactions($lid);
 
-echo "<p>Query is for league id '$lid' searching for transaction types '$type'</p>";
-
+echo "<h3>Transactions for league id '$lid'</h3>";
 echo '<table border="1">';
-foreach ($transactions->league->transactions->transaction as $t) {
-		
-	$team_key = 'unknown';
-	if ( isset( $t->players->player->transaction_data->destination_team_key ) ) {
-		$team_key = (string) $t->players->player->transaction_data->destination_team_key;
-	}
+echo '<tr><th>Player</th><th>Type</th><th>Manager</th><th>Date</th></tr>';
+$i = 0;
+foreach ($transactions as $transaction) {
 
-	if ( empty( $team_names[$team_key] ) ) {
-		$team_names[$team_key] = $team_key;
-	}
+	$bgcolor = (++$i & 1) ? '#cccccc' : '#ffffff';
 
-	echo '<tr>';
-	echo '<td>', $t->players->player->name->full, '</td>';
-	echo '<td>', $team_names[$team_key] , '</td>';
-	echo '<td>', date('Y m d', (integer) $t->timestamp), '</td>';
-	echo '<td>', $t->players->player->transaction_data->source_type, '</td>';
-	echo '<td>', $t->status, '</td>';
+	echo "<tr bgcolor='$bgcolor'>";
+	echo '<td>', $transaction['player_name'], ' (', $transaction['team'], ')</td>';
+	echo '<td>', $transaction['vtype'], '</td>';
+	echo '<td>', $m->teamnames[$transaction['manager']], '</td>';
+	echo '<td>', date('Y m d', $transaction['timestamp']), '</td>';
 	echo '</tr>';
 
 }
