@@ -50,6 +50,16 @@ Notes
 * The functionality is simple, and not pretty (e.g., ugly HTML) but it works
 * Revoking OAuth tokens for Yahoo applications can be done here: <https://api.login.yahoo.com/WSLogin/V1/unlink>
 
+Other
+------------
+
+This codebase is a hack, and not well thought out. There are other options out there, including:
+
+* JavaScript: https://github.com/whatadewitt/yfsapi
+    * Demo that's also useful for seeing what the Yahoo API is capable of: http://yfantasysandbox.herokuapp.com
+    * Probably the most updated and modern Yahoo API codebase out there
+* That's all for now, see google for others.
+
 TODO
 ------------
 
