@@ -1,3 +1,16 @@
+Status:
+------------
+Do not use this. 
+
+It was created 10 or so years ago for a different purpose, is unsightly, and no longer works.
+
+Trust me, do not use or look at this.
+
+I'm not kidding.
+
+I'm relearning to program after years off so will rewrite it eventually. Maybe. 
+
+
 Introduction
 ------------
 
